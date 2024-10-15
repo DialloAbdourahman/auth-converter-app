@@ -10,6 +10,7 @@ const router = express.Router();
 
 router.post("/", validateSignup, async (req: Request, res: Response) => {
   const { email, password } = req.body;
+  const { refresh } = req.cookies;
 
   const user = await User.findOne({ email });
 
@@ -18,14 +19,17 @@ router.post("/", validateSignup, async (req: Request, res: Response) => {
   }
 
   const match = await PasswordManager.compare(user.password, password);
-
   if (!match) {
     throw new BadRequestError("Unable to login", CODE.BAD_REQUEST);
   }
 
-  const { accessToken, refreshToken } = generateTokens(user);
+  const newTokensArray = user.tokens.filter((token) => {
+    return token !== refresh;
+  });
 
-  user.token = refreshToken;
+  const { accessToken, refreshToken } = generateTokens(user);
+  newTokensArray.push(refreshToken);
+  user.tokens = newTokensArray;
   await user.save();
 
   setCookies(res, accessToken, refreshToken);

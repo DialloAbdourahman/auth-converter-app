@@ -17,6 +17,16 @@ const start = async () => {
     process.exit();
   }
 
+  if (!process.env.ACCESS_TOKEN_EXPIRATION) {
+    console.log("ACCESS_TOKEN_EXPIRATION must be defined.");
+    process.exit();
+  }
+
+  if (!process.env.REFRESH_TOKEN_EXPIRATION) {
+    console.log("REFRESH_TOKEN_EXPIRATION must be defined.");
+    process.exit();
+  }
+
   if (!process.env.MONGO_URI) {
     console.log("MONGO_URI must be defined.");
     process.exit();

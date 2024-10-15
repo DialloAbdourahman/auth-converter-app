@@ -9,32 +9,32 @@ import { unsetCookies } from "../services/unset-cookies";
 
 const router = express.Router();
 
-router.post("/", validateSignup, async (req: Request, res: Response) => {
+router.post("/", async (req: Request, res: Response) => {
   const { refresh } = req.cookies;
   if (!refresh) {
     throw new UnauthorizedError("Not authorized", CODE.UNAUTHORIZED);
   }
   unsetCookies(res);
 
-  const foundUser = await User.findOne({ token: refresh });
+  const foundUser = await User.findOne({ tokens: refresh });
   if (!foundUser) {
     try {
       const decoded: any = jwt.verify(
         refresh,
         process.env.REFRESH_TOKEN_JWT_KEY as string
       );
+      console.log("Reuse detection mechanism");
 
       const hackedUser = await User.findOne({ id: decoded.id });
       if (hackedUser) {
-        hackedUser.token = undefined;
+        hackedUser.tokens = [];
         await hackedUser?.save();
       }
 
-      res.status(200).send();
+      throw new UnauthorizedError("Reuse detection", CODE.REUSE_DETECTION);
     } catch (error: any) {
       throw new UnauthorizedError("Cannot decode refresh token");
     }
-    return;
   }
 
   try {
@@ -44,13 +44,17 @@ router.post("/", validateSignup, async (req: Request, res: Response) => {
     );
 
     if (decoded?.id !== foundUser.id) {
-      console.log("hey there");
-
       throw new UnauthorizedError("Not authorized");
     }
 
     const { accessToken, refreshToken } = generateTokens(foundUser);
-    foundUser.token = refreshToken;
+    const newTokensArray = foundUser.tokens.filter((token) => {
+      return token !== refresh;
+    });
+
+    newTokensArray.push(refreshToken);
+    foundUser.tokens = newTokensArray;
+
     await foundUser.save();
 
     setCookies(res, accessToken, refreshToken);

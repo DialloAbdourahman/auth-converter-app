@@ -11,7 +11,7 @@ interface UserAttrs {
 export interface UserDoc extends mongoose.Document {
   email: string;
   password: string;
-  token?: string;
+  tokens: string[];
   updatedAt: string;
   createdAt: string;
 }
@@ -31,9 +31,9 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    token: {
-      type: String,
-      required: false,
+    tokens: {
+      type: [String],
+      required: true,
     },
   },
   {
@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema(
         ret.id = ret._id;
         delete ret._id;
         delete ret.password;
-        delete ret.token;
+        delete ret.tokens;
         delete ret.__v;
       },
     },
@@ -64,7 +64,11 @@ userSchema.pre("save", async function (done) {
 // The only way we create a new record and to allow TS to figure out what types we are using.
 // Here, we are adding a method to the model.
 userSchema.statics.build = (attrs: UserAttrs) => {
-  return new User(attrs);
+  return new User({
+    email: attrs.email,
+    password: attrs.password,
+    tokens: [],
+  });
 };
 
 const User = mongoose.model<UserDoc, UserModel>("User", userSchema);

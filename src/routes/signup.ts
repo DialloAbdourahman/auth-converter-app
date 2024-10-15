@@ -21,7 +21,7 @@ router.post("/", validateSignup, async (req: Request, res: Response) => {
 
   const { accessToken, refreshToken } = generateTokens(user);
 
-  user.token = refreshToken;
+  user.tokens = [refreshToken];
   await user.save();
 
   setCookies(res, accessToken, refreshToken);
