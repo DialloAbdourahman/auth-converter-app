@@ -4,6 +4,8 @@ import { User } from "../models/user";
 import { BadRequestError, CODE } from "@daconverter/common-libs";
 import { generateTokens } from "../services/generate-tokens";
 import { setCookies } from "../services/set-cookies";
+import { UserCreatedPublisher } from "../events/publishers/UserCreatedPublisher";
+import { rabbitmqWrapper } from "../rabbitmq-wrapper";
 
 const router = express.Router();
 
@@ -23,6 +25,13 @@ router.post("/", validateSignup, async (req: Request, res: Response) => {
 
   user.tokens = [refreshToken];
   await user.save();
+
+  await new UserCreatedPublisher(rabbitmqWrapper.client).publish({
+    id: user.id,
+    email: user.email,
+    fullname: user.fullname,
+    version: user.version,
+  });
 
   setCookies(res, accessToken, refreshToken);
 

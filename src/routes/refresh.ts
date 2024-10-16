@@ -6,6 +6,8 @@ import jwt from "jsonwebtoken";
 import { generateTokens } from "../services/generate-tokens";
 import { setCookies } from "../services/set-cookies";
 import { unsetCookies } from "../services/unset-cookies";
+import { UserUpdatedPublisher } from "../events/publishers/UserUpdatedPublisher";
+import { rabbitmqWrapper } from "../rabbitmq-wrapper";
 
 const router = express.Router();
 
@@ -56,6 +58,13 @@ router.post("/", async (req: Request, res: Response) => {
     foundUser.tokens = newTokensArray;
 
     await foundUser.save();
+
+    await new UserUpdatedPublisher(rabbitmqWrapper.client).publish({
+      id: foundUser.id,
+      email: foundUser.email,
+      version: foundUser.version,
+      fullname: foundUser.fullname,
+    });
 
     setCookies(res, accessToken, refreshToken);
 

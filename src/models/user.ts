@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { PasswordManager } from "../services/password";
+import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 
 // An interface that describes the properties required to create a new user
 interface UserAttrs {
@@ -11,7 +12,14 @@ interface UserAttrs {
 export interface UserDoc extends mongoose.Document {
   email: string;
   password: string;
+  fullname: string;
+  address: {
+    country: string;
+    city: string;
+    street: string;
+  };
   tokens: string[];
+  version: number;
   updatedAt: string;
   createdAt: string;
 }
@@ -30,6 +38,28 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
+    },
+    fullname: {
+      type: String,
+      required: false,
+    },
+    address: {
+      type: {
+        country: {
+          type: String,
+          required: false,
+        },
+        city: {
+          type: String,
+          required: false,
+        },
+        street: {
+          type: String,
+          required: false,
+        },
+      },
+      _id: false,
+      required: false,
     },
     tokens: {
       type: [String],
@@ -51,6 +81,10 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+// Optimistic Concurency Control (OCC)
+userSchema.set("versionKey", "version");
+userSchema.plugin(updateIfCurrentPlugin);
+
 // A middleware function that runs before we save a document.
 userSchema.pre("save", async function (done) {
   // Only has the password if it has been modified.
@@ -68,6 +102,12 @@ userSchema.statics.build = (attrs: UserAttrs) => {
     email: attrs.email,
     password: attrs.password,
     tokens: [],
+    fullname: "",
+    address: {
+      country: "",
+      city: "",
+      street: "",
+    },
   });
 };
 

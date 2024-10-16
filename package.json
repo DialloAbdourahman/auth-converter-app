@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watchAll --no-cache",
+    "test": "jest --watchAll --no-cache --runInBand",
+    "test-ci": "jest --runInBand",
     "build": "tsc",
     "dev": "ts-node-dev src/index.ts"
   },
@@ -19,8 +20,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@daconverter/common-libs": "^1.0.22",
-    "@types/amqplib": "^0.10.5",
+    "@daconverter/common-libs": "^1.0.28",
     "@types/cookie-parser": "^1.4.7",
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.7",
@@ -34,11 +34,13 @@
     "express-validator": "^7.2.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.7.1",
+    "mongoose-update-if-current": "^1.4.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.6.3"
   },
   "devDependencies": {
+    "@types/amqplib": "^0.10.5",
     "@types/jest": "^29.5.13",
     "@types/supertest": "^6.0.2",
     "jest": "^29.7.0",

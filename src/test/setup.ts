@@ -1,5 +1,7 @@
 import mongoose, { mongo } from "mongoose";
 
+jest.mock("../rabbitmq-wrapper.ts");
+
 // Runs before all our tests starts
 beforeAll(async () => {
   process.env.ACCESS_TOKEN_JWT_KEY = "1234";
@@ -13,11 +15,12 @@ beforeAll(async () => {
     console.log("Connected to mongodb successfully");
   } catch (error) {
     console.log("Database connection error", error);
-    process.exit();
+    // process.exit();
   }
 });
 
 beforeEach(async () => {
+  jest.clearAllMocks();
   const collections = await mongoose.connection.db?.collections();
   if (collections) {
     for (let collection of collections) {
@@ -28,5 +31,5 @@ beforeEach(async () => {
 
 afterAll(async () => {
   await mongoose.connection.close();
-  console.log("disconnected to the in-memory test mongodb");
+  console.log("disconnected to mongodb");
 });
