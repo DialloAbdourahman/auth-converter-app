@@ -6,7 +6,8 @@
     "test": "jest --watchAll --no-cache --runInBand",
     "test-ci": "jest --runInBand",
     "build": "tsc",
-    "dev": "ts-node-dev src/index.ts"
+    "dev": "ts-node-dev src/index.ts",
+    "start": "node dist/index.js"
   },
   "jest": {
     "preset": "ts-jest",

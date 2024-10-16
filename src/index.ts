@@ -79,8 +79,8 @@ const start = async () => {
     process.exit();
   }
 
-  app.listen(PORT, () => {
-    console.log(`Auth service listening on port ${PORT}`);
+  app.listen(process.env.PORT || PORT, () => {
+    console.log(`Auth service listening on port ${process.env.PORT || PORT}`);
   });
 };
 
