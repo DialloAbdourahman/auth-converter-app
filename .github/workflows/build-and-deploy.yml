@@ -1,0 +1,51 @@
+name: build-deploy-auth
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Build the docker image
+        run: docker build -t dialloabdourahman/auth-converter:latest .
+      
+      - name: Login to dockerhub
+        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      
+      - name: Push the image to dockerhub
+        run: docker push dialloabdourahman/auth-converter:latest
+
+  # deploy:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+
+  #     - name: Login to dockerhub
+  #       run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+  #       env:
+  #         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  #         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+  #     - name: Install doctl
+  #       uses: digitalocean/action-doctl@v2
+  #       with:
+  #         token: $DIGITALOCEAN_ACCESS_TOKEN
+  #       env:
+  #         DIGITAL_OCEAN_ACCESS_TOKEN: ${{ secrets.DIGITAL_OCEAN_ACCESS_TOKEN }}
+
+  #     - name: Save DigitalOcean kubeconfig
+  #       run: doctl kubernetes cluster kubeconfig save $DIGITAL_OCEAN_CLUSTER_NAME
+  #       env:
+  #         DIGITAL_OCEAN_CLUSTER_NAME: ${{ secrets.DIGITAL_OCEAN_CLUSTER_NAME }}
+
+  #     - name: Restart the kubernetes deployment
+  #       run: kubectl rollout restart deployment auth-depl
