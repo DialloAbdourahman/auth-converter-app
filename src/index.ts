@@ -33,13 +33,8 @@ const start = async () => {
     process.exit();
   }
 
-  if (!process.env.RABBITMQ_USERNAME) {
-    console.log("RABBITMQ_USERNAME must be defined.");
-    process.exit();
-  }
-
-  if (!process.env.RABBITMQ_PASSWORD) {
-    console.log("RABBITMQ_PASSWORD must be defined.");
+  if (!process.env.RABBITMQ_URL) {
+    console.log("RABBITMQ_URL must be defined.");
     process.exit();
   }
 

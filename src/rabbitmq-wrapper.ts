@@ -11,9 +11,7 @@ class RabbitmqWrapper {
   }
 
   async connect() {
-    const conn = await amqplib.connect(
-      `amqp://${process.env.RABBITMQ_USERNAME}:${process.env.RABBITMQ_PASSWORD}@localhost:5672`
-    );
+    const conn = await amqplib.connect(process.env.RABBITMQ_URL as string);
     console.log("Connected to Rabbitmq successfully");
     this._client = conn;
   }
