@@ -27,15 +27,26 @@ router.post("/", async (req: Request, res: Response) => {
       );
       console.log("Reuse detection mechanism");
 
-      const hackedUser = await User.findOne({ id: decoded.id });
+      const hackedUser = await User.findById(decoded.id);
+
       if (hackedUser) {
         hackedUser.tokens = [];
         await hackedUser?.save();
+
+        await new UserUpdatedPublisher(rabbitmqWrapper.client).publish({
+          id: hackedUser.id,
+          email: hackedUser.email,
+          version: hackedUser.version,
+          fullname: hackedUser.fullname,
+        });
       }
 
       throw new UnauthorizedError("Reuse detection", CODE.REUSE_DETECTION);
     } catch (error: any) {
-      throw new UnauthorizedError("Cannot decode refresh token");
+      if (error instanceof jwt.JsonWebTokenError) {
+        throw new UnauthorizedError("Cannot decode refresh token");
+      }
+      throw error;
     }
   }
 
@@ -75,9 +86,12 @@ router.post("/", async (req: Request, res: Response) => {
         "Refresh token has expired, login again.",
         CODE.REFRESH_TOKEN_EXPIRED
       );
-    } else {
+    }
+    if (error instanceof jwt.JsonWebTokenError) {
       throw new UnauthorizedError("Cannot decode refresh token");
     }
+
+    throw error;
   }
 });
 
