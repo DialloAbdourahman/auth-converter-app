@@ -10,7 +10,7 @@ import { rabbitmqWrapper } from "../rabbitmq-wrapper";
 const router = express.Router();
 
 router.post("/", validateSignup, async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const { email, password, fullname } = req.body;
 
   const existingUser = await User.findOne({ email });
 
@@ -18,7 +18,7 @@ router.post("/", validateSignup, async (req: Request, res: Response) => {
     throw new BadRequestError("Email already in user", CODE.EMAIL_IN_USE);
   }
 
-  const user = User.build({ email, password });
+  const user = User.build({ email, password, fullname });
   await user.save();
 
   const { accessToken, refreshToken } = generateTokens(user);

@@ -7,6 +7,8 @@ import { User } from "../../models/user";
 it("should loggout a user", async () => {
   let email = "test@test.com";
   let password = "password1234";
+  const fullname = "test";
+
   const { cookie } = await getLoginUser(email, password);
 
   const response = await request(app)
