@@ -46,15 +46,17 @@ it("should not allow a user to create an account without all the valid informati
 it("should not create an account if a user with the same email exist already", async () => {
   const email = "test@test.com";
   const password = "password 1234";
+  const fullname = "test";
   const user = User.build({
     email,
     password,
+    fullname,
   });
   await user.save();
 
   const response = await request(app)
     .post("/api/users")
-    .send({ email, password });
+    .send({ email, password, fullname });
   expect(response.status).toEqual(400);
   expect(response.body.code).toBe(CODE.EMAIL_IN_USE);
 });
@@ -62,10 +64,11 @@ it("should not create an account if a user with the same email exist already", a
 it("should create an account user enters all the correct information", async () => {
   const email = "test@test.com";
   const password = "password 1234";
+  const fullname = "test";
 
   const response = await request(app)
     .post("/api/users")
-    .send({ email, password });
+    .send({ email, password, fullname });
   expect(response.status).toEqual(201);
   expect(response.body.email).toBe(email);
 
@@ -94,10 +97,11 @@ it("should create an account user enters all the correct information", async () 
 it("should publish an event", async () => {
   const email = "test@test.com";
   const password = "password 1234";
+  const fullname = "test";
 
   const response = await request(app)
     .post("/api/users")
-    .send({ email, password });
+    .send({ email, password, fullname });
   expect(response.status).toEqual(201);
   expect(response.body.email).toBe(email);
 

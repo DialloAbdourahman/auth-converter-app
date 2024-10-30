@@ -6,6 +6,7 @@ import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 interface UserAttrs {
   email: string;
   password: string;
+  fullname: string;
 }
 
 // An interface that describes the properties that a User documents has
@@ -102,7 +103,7 @@ userSchema.statics.build = (attrs: UserAttrs) => {
     email: attrs.email,
     password: attrs.password,
     tokens: [],
-    fullname: "",
+    fullname: attrs.fullname,
     address: {
       country: "",
       city: "",

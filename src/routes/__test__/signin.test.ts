@@ -9,10 +9,11 @@ import { UserUpdatedPublisher } from "../../events/publishers/UserUpdatedPublish
 it("should not login user with incorrect credentials", async () => {
   const email = "test@test.com";
   const password = "password1234";
+  const fullname = "test";
 
   const createUserResponse = await request(app)
     .post("/api/users")
-    .send({ email, password });
+    .send({ email, password, fullname });
 
   expect(createUserResponse.status).toEqual(201);
   expect(createUserResponse.body.email).toBe(email);

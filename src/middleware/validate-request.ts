@@ -6,6 +6,7 @@ import { body, ValidationChain } from "express-validator";
 type ValidatorMiddleware = ValidationChain | RequestHandler;
 
 export const validateSignup: ValidatorMiddleware[] = [
+  body("fullname").exists().withMessage("Fullname must be valid"),
   body("email").isEmail().withMessage("Email must be valid"),
   body("password")
     .trim()
