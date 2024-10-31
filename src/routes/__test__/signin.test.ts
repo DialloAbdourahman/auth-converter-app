@@ -16,7 +16,7 @@ it("should not login user with incorrect credentials", async () => {
     .send({ email, password, fullname });
 
   expect(createUserResponse.status).toEqual(201);
-  expect(createUserResponse.body.email).toBe(email);
+  expect(createUserResponse.body.data.email).toBe(email);
 
   const response = await request(app)
     .post("/api/users/signin")

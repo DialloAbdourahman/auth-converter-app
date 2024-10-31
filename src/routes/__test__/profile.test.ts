@@ -13,7 +13,7 @@ it("should allow a user to view his profile", async () => {
     .set("Cookie", cookie)
     .send();
   expect(response.status).toEqual(200);
-  expect(response.body.email).toBe(email);
+  expect(response.body.data.email).toBe(email);
 });
 
 it("should not allow a user to view his profile if they are not logged in", async () => {

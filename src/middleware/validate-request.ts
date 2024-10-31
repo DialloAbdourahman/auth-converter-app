@@ -22,3 +22,12 @@ export const validateUpdate: ValidatorMiddleware[] = [
   body("street").exists().withMessage("Street must be provided"),
   validateRequest,
 ];
+
+export const validateUpdatePassword: ValidatorMiddleware[] = [
+  body("oldPassword").exists().withMessage("Old password must be valid"),
+  body("newPassword").exists().withMessage("New password must be provided"),
+  body("confirmNewPassword")
+    .exists()
+    .withMessage("Confirm new password must be provided"),
+  validateRequest,
+];

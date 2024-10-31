@@ -1,7 +1,11 @@
 import express, { Request, Response } from "express";
 import { validateSignup } from "../middleware/validate-request";
 import { User } from "../models/user";
-import { CODE, UnauthorizedError } from "@daconverter/common-libs";
+import {
+  CODE,
+  OrchestrationResult,
+  UnauthorizedError,
+} from "@daconverter/common-libs";
 import jwt from "jsonwebtoken";
 import { generateTokens } from "../services/generate-tokens";
 import { setCookies } from "../services/set-cookies";
@@ -79,7 +83,7 @@ router.post("/", async (req: Request, res: Response) => {
 
     setCookies(res, accessToken, refreshToken);
 
-    res.status(200).send();
+    OrchestrationResult.success(res);
   } catch (error: any) {
     if (error.name === "TokenExpiredError") {
       throw new UnauthorizedError(

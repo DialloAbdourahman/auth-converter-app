@@ -1,7 +1,11 @@
 import express, { Request, Response } from "express";
 import { validateSignup } from "../middleware/validate-request";
 import { User } from "../models/user";
-import { BadRequestError, CODE } from "@daconverter/common-libs";
+import {
+  BadRequestError,
+  CODE,
+  OrchestrationResult,
+} from "@daconverter/common-libs";
 import { generateTokens } from "../services/generate-tokens";
 import { setCookies } from "../services/set-cookies";
 import { UserCreatedPublisher } from "../events/publishers/UserCreatedPublisher";
@@ -35,7 +39,7 @@ router.post("/", validateSignup, async (req: Request, res: Response) => {
 
   setCookies(res, accessToken, refreshToken);
 
-  res.status(201).send(user);
+  OrchestrationResult.item(res, user, 201);
 });
 
 export { router as signupRouter };
