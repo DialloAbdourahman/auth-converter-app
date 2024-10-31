@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { validateSignup } from "../middleware/validate-request";
 import { User } from "../models/user";
 import { unsetCookies } from "../services/unset-cookies";
+import { OrchestrationResult } from "@daconverter/common-libs";
 
 const router = express.Router();
 
@@ -27,7 +28,7 @@ router.post("/", async (req: Request, res: Response) => {
 
   unsetCookies(res);
 
-  res.status(204).send();
+  OrchestrationResult.success(res, 204);
 });
 
 export { router as logoutRouter };

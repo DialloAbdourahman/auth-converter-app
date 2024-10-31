@@ -61,7 +61,7 @@ it("should not create an account if a user with the same email exist already", a
   expect(response.body.code).toBe(CODE.EMAIL_IN_USE);
 });
 
-it("should create an account user enters all the correct information", async () => {
+it("should create an account if the user enters all the correct information", async () => {
   const email = "test@test.com";
   const password = "password 1234";
   const fullname = "test";
@@ -70,7 +70,7 @@ it("should create an account user enters all the correct information", async () 
     .post("/api/users")
     .send({ email, password, fullname });
   expect(response.status).toEqual(201);
-  expect(response.body.email).toBe(email);
+  expect(response.body.data.email).toBe(email);
 
   const user = await User.findOne({ email });
   expect(user?.email).toBe(email);
@@ -103,7 +103,7 @@ it("should publish an event", async () => {
     .post("/api/users")
     .send({ email, password, fullname });
   expect(response.status).toEqual(201);
-  expect(response.body.email).toBe(email);
+  expect(response.body.data.email).toBe(email);
 
   expect(rabbitmqWrapper.client.createChannel).toHaveBeenCalled();
 

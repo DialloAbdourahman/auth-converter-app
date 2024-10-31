@@ -1,7 +1,11 @@
 import express, { Request, Response } from "express";
 import { validateUpdate } from "../middleware/validate-request";
 import { User } from "../models/user";
-import { CODE, NotFoundError } from "@daconverter/common-libs";
+import {
+  CODE,
+  NotFoundError,
+  OrchestrationResult,
+} from "@daconverter/common-libs";
 import { rabbitmqWrapper } from "../rabbitmq-wrapper";
 import { UserUpdatedPublisher } from "../events/publishers/UserUpdatedPublisher";
 
@@ -29,7 +33,7 @@ router.put("/", validateUpdate, async (req: Request, res: Response) => {
     fullname: user.fullname,
   });
 
-  res.status(200).send(user);
+  OrchestrationResult.item(res, user);
 });
 
 export { router as updateRouter };

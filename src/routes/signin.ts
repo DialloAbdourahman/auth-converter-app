@@ -1,6 +1,10 @@
 import express, { Request, Response } from "express";
 import { User } from "../models/user";
-import { BadRequestError, CODE } from "@daconverter/common-libs";
+import {
+  BadRequestError,
+  CODE,
+  OrchestrationResult,
+} from "@daconverter/common-libs";
 import { PasswordManager } from "../services/password";
 import { generateTokens } from "../services/generate-tokens";
 import { setCookies } from "../services/set-cookies";
@@ -42,7 +46,7 @@ router.post("/", async (req: Request, res: Response) => {
 
   setCookies(res, accessToken, refreshToken);
 
-  res.status(200).send(user);
+  OrchestrationResult.item(res, user);
 });
 
 export { router as signinRouter };
