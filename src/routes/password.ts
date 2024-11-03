@@ -13,7 +13,7 @@ import { rabbitmqWrapper } from "../rabbitmq-wrapper";
 
 const router = express.Router();
 
-router.post(
+router.patch(
   "/",
   validateUpdatePassword,
   async (req: Request, res: Response) => {
