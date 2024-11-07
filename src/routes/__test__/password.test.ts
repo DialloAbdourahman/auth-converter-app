@@ -11,7 +11,7 @@ it("should allow a user to update his password and emit and event", async () => 
   const { cookie } = await getLoginUser(email, password);
 
   const response = await request(app)
-    .post("/api/users/password")
+    .patch("/api/users/password")
     .set("Cookie", cookie)
     .send({
       oldPassword: password,
@@ -42,7 +42,7 @@ it("should not allow a user to update his password if he enters a wrong password
   const { cookie } = await getLoginUser(email, password);
 
   const response = await request(app)
-    .post("/api/users/password")
+    .patch("/api/users/password")
     .set("Cookie", cookie)
     .send({
       oldPassword: "password",
@@ -59,7 +59,7 @@ it("should not allow a user to update his password if the new password and confi
   const { cookie } = await getLoginUser(email, password);
 
   const response = await request(app)
-    .post("/api/users/password")
+    .patch("/api/users/password")
     .set("Cookie", cookie)
     .send({
       oldPassword: password,
