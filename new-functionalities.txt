@@ -1,0 +1,14 @@
+1. ACTIVATE ACCOUNT
+    => Remove the token assign at signup
+    => When the user signup, create the user with a field of activated=false, generate jwt token containing the id of the user created and send it to the email provided.
+    => When the user receives the email, he will open it and it will take him to the activate account page alongside the code. Launch a request directly with the code to activate the account with the id found in the jwt code.
+    => Navigate the user to the signin page.
+    => The token here should be generated and sent to the user whenever he tries to login with an inactived account
+
+2. FORGOT PASSWORD
+    => Ask the user to enter his email, find the user, generate jwt token containing the id of the user and send it to his email.
+    => User will click on the email with the jwt code and it will redirect him to a page with field of new password and confirm new password.
+    => User sends the request to the backend alongside the jwt code, we decode the jwt, find the user, update the password and finally send a successful response.
+    => Redirect the user to the login page.
+
+3. GOOGLE AUTH
