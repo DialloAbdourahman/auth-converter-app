@@ -12,3 +12,5 @@
     => Redirect the user to the login page.
 
 3. GOOGLE AUTH
+
+=> Work on the forgot password functionality.

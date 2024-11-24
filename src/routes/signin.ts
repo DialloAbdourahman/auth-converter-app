@@ -23,6 +23,10 @@ router.post("/", async (req: Request, res: Response) => {
     throw new BadRequestError("Unable to login", CODE.UNABLE_TO_LOGIN);
   }
 
+  if (!user.activated) {
+    throw new BadRequestError("Activate account", CODE.ACCOUNT_NOT_ACTIVATED);
+  }
+
   const match = await PasswordManager.compare(user.password, password);
   if (!match) {
     throw new BadRequestError("Unable to login", CODE.UNABLE_TO_LOGIN);

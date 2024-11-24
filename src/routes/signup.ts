@@ -6,10 +6,9 @@ import {
   CODE,
   OrchestrationResult,
 } from "@daconverter/common-libs";
-import { generateTokens } from "../services/generate-tokens";
-import { setCookies } from "../services/set-cookies";
 import { UserCreatedPublisher } from "../events/publishers/UserCreatedPublisher";
 import { rabbitmqWrapper } from "../rabbitmq-wrapper";
+import { generateJwtCode } from "../services/generate-jwt-code";
 
 const router = express.Router();
 
@@ -19,25 +18,34 @@ router.post("/", validateSignup, async (req: Request, res: Response) => {
   const existingUser = await User.findOne({ email });
 
   if (existingUser) {
-    throw new BadRequestError("Email already in user", CODE.EMAIL_IN_USE);
+    if (existingUser.activated) {
+      throw new BadRequestError(
+        "Email exist already in user",
+        CODE.EMAIL_IN_USE
+      );
+    } else {
+      throw new BadRequestError(
+        "Account exist already but has not been activated, check email.",
+        CODE.ACCOUNT_NOT_ACTIVATED
+      );
+    }
   }
 
   const user = User.build({ email, password, fullname });
   await user.save();
 
-  const { accessToken, refreshToken } = generateTokens(user);
-
-  user.tokens = [refreshToken];
-  await user.save();
+  const { code } = generateJwtCode(
+    user,
+    process.env.ACTIVATE_ACCOUNT_JWT_KEY as string
+  );
 
   await new UserCreatedPublisher(rabbitmqWrapper.client).publish({
     id: user.id,
     email: user.email,
     fullname: user.fullname,
     version: user.version,
+    code,
   });
-
-  setCookies(res, accessToken, refreshToken);
 
   OrchestrationResult.item(res, user, 201);
 });

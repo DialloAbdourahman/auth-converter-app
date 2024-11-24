@@ -9,6 +9,8 @@ beforeAll(async () => {
   process.env.ACCESS_TOKEN_EXPIRATION = "1d";
   process.env.REFRESH_TOKEN_EXPIRATION = "7d";
   process.env.MONGO_URI = "mongodb://localhost:27017/auth-test";
+  process.env.ACTIVATE_ACCOUNT_JWT_KEY = "UDUFHSUDF";
+  process.env.FORGOT_PASSWORD_JWT_KEY = "YYSKJGYEYSUEY";
 
   try {
     await mongoose.connect(process.env.MONGO_URI);

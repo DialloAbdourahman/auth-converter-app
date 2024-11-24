@@ -23,7 +23,7 @@ it("should not login user with incorrect credentials", async () => {
     .send({ email, password: "password89349483" });
 
   expect(response.status).toEqual(400);
-  expect(response.body.code).toBe(CODE.UNABLE_TO_LOGIN);
+  expect(response.body.code).toBe(CODE.ACCOUNT_NOT_ACTIVATED);
 });
 
 it("should login a user", async () => {
