@@ -21,6 +21,7 @@ export interface UserDoc extends mongoose.Document {
   };
   tokens: string[];
   version: number;
+  activated: boolean;
   updatedAt: string;
   createdAt: string;
 }
@@ -42,6 +43,10 @@ const userSchema = new mongoose.Schema(
     },
     fullname: {
       type: String,
+      required: false,
+    },
+    activated: {
+      type: Boolean,
       required: false,
     },
     address: {
@@ -104,6 +109,7 @@ userSchema.statics.build = (attrs: UserAttrs) => {
     password: attrs.password,
     tokens: [],
     fullname: attrs.fullname,
+    activated: false,
     address: {
       country: "",
       city: "",

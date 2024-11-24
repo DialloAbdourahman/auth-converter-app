@@ -58,7 +58,7 @@ it("should not create an account if a user with the same email exist already", a
     .post("/api/users")
     .send({ email, password, fullname });
   expect(response.status).toEqual(400);
-  expect(response.body.code).toBe(CODE.EMAIL_IN_USE);
+  expect(response.body.code).toBe(CODE.ACCOUNT_NOT_ACTIVATED);
 });
 
 it("should create an account if the user enters all the correct information", async () => {
@@ -76,22 +76,7 @@ it("should create an account if the user enters all the correct information", as
   expect(user?.email).toBe(email);
 
   expect(user?.password).not.toBe(password);
-  expect(user?.tokens.length).toBe(1);
-
-  expect(response.headers["set-cookie"]).toBeDefined();
-
-  const cookies = Array.from(response.headers["set-cookie"]) as string[];
-  const accessCookie = cookies?.find((cookie: string) =>
-    cookie.startsWith("access=")
-  );
-  const refreshCookie = cookies?.find((cookie: string) =>
-    cookie.startsWith("refresh=")
-  );
-  expect(accessCookie).toBeDefined();
-  expect(refreshCookie).toBeDefined();
-
-  const refreshCookieValue = refreshCookie?.match(/refresh=([^;]+)/)?.[1];
-  expect(refreshCookieValue).toBe(user?.tokens[0]);
+  expect(user?.tokens.length).toBe(0);
 });
 
 it("should publish an event", async () => {
@@ -114,6 +99,7 @@ it("should publish an event", async () => {
     email: "test@test.com",
     fullname: "test",
     version: 0,
+    code: "1234",
   };
   await userCreatePublisher.publish(mockEventData);
 

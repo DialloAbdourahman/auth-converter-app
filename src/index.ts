@@ -38,6 +38,16 @@ const start = async () => {
     process.exit();
   }
 
+  if (!process.env.ACTIVATE_ACCOUNT_JWT_KEY) {
+    console.log("ACTIVATE_ACCOUNT_JWT_KEY must be defined.");
+    process.exit();
+  }
+
+  if (!process.env.FORGOT_PASSWORD_JWT_KEY) {
+    console.log("FORGOT_PASSWORD_JWT_KEY must be defined.");
+    process.exit();
+  }
+
   try {
     await mongoose.connect(process.env.MONGO_URI);
     console.log("Connected to mongodb successfully");
